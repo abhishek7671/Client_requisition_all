@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Graphs</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <h1>Client Requisitions Pie Graphs</h1>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="width: 30%;">
+                <h2>Profile Shared Count</h2>
+                <canvas id="profile-shared-chart" width="300" height="300"></canvas>
+            </div>
+            <div style="width: 30%;">
+                <h2>Accepted Count</h2>
+                <canvas id="accepted-chart" width="300" height="300"></canvas>
+            </div>
+            <div style="width: 30%;">
+                <h2>Rejected Count</h2>
+                <canvas id="rejected-chart" width="300" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const pieDataJson = {{ pie_data_json | safe }};
+
+            const labels = pieDataJson.map(item => item.client_name);
+            const profileSharedCounts = pieDataJson.map(item => item.profile_shared_count);
+            const acceptedCounts = pieDataJson.map(item => item.accepted_count);
+            const rejectedCounts = pieDataJson.map(item => item.rejected_count);
+
+            const sharedCtx = document.getElementById('profile-shared-chart').getContext('2d');
+            const sharedChart = new Chart(sharedCtx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: profileSharedCounts,
+                        backgroundColor: generateRandomColors(profileSharedCounts.length)
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Profile Shared Count Distribution',
+                        position: 'top'
+                    }
+                }
+            });
+
+            const acceptedCtx = document.getElementById('accepted-chart').getContext('2d');
+            const acceptedChart = new Chart(acceptedCtx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: acceptedCounts,
+                        backgroundColor: generateRandomColors(acceptedCounts.length)
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Accepted Count Distribution',
+                        position: 'top'
+                    }
+                }
+            });
+
+            const rejectedCtx = document.getElementById('rejected-chart').getContext('2d');
+            const rejectedChart = new Chart(rejectedCtx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: rejectedCounts,
+                        backgroundColor: generateRandomColors(rejectedCounts.length)
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Rejected Count Distribution',
+                        position: 'top'
+                    }
+                }
+            });
+
+            // Function to generate random colors
+            function generateRandomColors(count) {
+                const colors = [];
+                for (let i = 0; i < count; i++) {
+                    const color = `rgba(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)}, 0.7)`;
+                    colors.push(color);
+                }
+                return colors;
+            }
+
+            // Function to generate random number between min and max (inclusive)
+            function getRandom(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+        });
+    </script>
+</body>
+</html>

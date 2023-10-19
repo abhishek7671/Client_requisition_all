@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Require</title>
+</head>
+<body>
+    <h1>Create Require Position</h1>
+    {% if message %}
+    <p style='text-align: center;'>{{ message }}</p>
+    {% endif %}
+    <form method="post" action="/required_positions/">
+    <label for="tech_stack">Technology:</label>
+    <select id="tech_stack" name="tech_stack" >
+        {% for tech in tech_list %}
+            <option value="{{ tech.technology }}">{{ tech.technology }}</option>
+        {% endfor %}
+    </select><br><br>
+    <label for="experience">Experience:</label>
+    <input type="number" id="experience" name="experience"><br><br>
+    <label for="position_required">Position Required:</label>
+    <input type="text" id="position_required" name="position_required"><br><br>
+    <input type="submit" value="Create">
+</form>
+</body>
+</html>

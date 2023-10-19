@@ -1,0 +1,148 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<style>
+    .email-header{
+            font-size: 30px;
+            color: #34add6;
+            border: 1px solid #eddbdb;
+            width: 20rem;
+            padding: 0px 0px 0px 0px;
+            box-shadow: 2px 2px 14px;
+        }
+
+    .subject-thread {
+            color: #1a509e;
+            width: 57%;
+            font-weight: 550;
+            font-size: 22px;
+            margin-left: 1rem;
+            margin-top: 4px;
+        }
+
+        .mt-4 {
+            margin-top: -1.5rem!important;
+        }
+
+    .email-thread {
+            border: 1px solid #d7d1d1;
+            box-sizing: content-box;
+            margin-top: 30px;
+            background-color: #fafafa;
+            box-shadow: -3px 4px 8px #e1dada;
+        }
+    .email-text {
+        margin-left: 21px;
+    }
+
+    .table>:not(caption)>*>* {
+        padding: 0.5rem 0.46rem !important ;
+    }
+
+</style>
+<div style="width:1020px !important">
+    <center>
+        <div class="col-md-6" style="width:100%;">
+            <h1 class="email-header mt-4">Email Thread Data</h1>
+        </div>
+    </center>
+
+    <div class="row mt-2" style="width: 1032px">
+        <div class="col subject-thread">
+        {% if email_thread_data %}
+        SUBJECT : " {{ subject }} "
+        {% else %}
+        No Email Threads Found
+        {% endif %}
+        </div>
+
+        <div class="col reply-link text-end" style="margin-top: 3px; padding-right:0px">
+            {% if email_thread_data %}
+            <a href="/reply?subject={{ subject }}" class="btn btn-danger float-right"
+               style="width: 28%; margin-right: 0.5rem; font-weight: 600;">Reply</a>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div style="width:1032px !important">
+        {% for thread in email_thread_data %}
+        <center>
+            <div class="email-thread" style="width:1010px !important; padding-top: 30px;">
+                <div class="email-text text-start"><b>To : </b>{{ thread.recipients | join(", ") }}</div>
+                    <br>
+                {% if thread.cc %}
+                <div class="email-text text-start"><b>Cc : </b>{{ thread.cc | join(", ") }}</div>
+                {% endif %}
+                <br>
+                <div class="email-text text-start"><b>Date : </b>{{ thread.timestamp }}     Time: {{thread.time}}</div>
+                <br>
+                <div class="email-text text-start"> <b> Body :</b>
+                    {{thread.text}}
+                </div>
+                {% if thread.table %}
+                <div class="email-table text-start">
+                    <div style="margin-left: 21px;">
+                        <br><b>  Table : </b><br>
+                    </div>
+                    <table class="table table-striped text-center" id="myTable" style="width: 97%;margin-left: 1.5%;">
+                        <thead>
+                        <tr class="t-row">
+                            <th><b>ID</b></th>
+                            <th><b>emp_id</b></th>
+                            <th><b>associate_name</b></th>
+                            <th><b>department</b></th>
+                            <th><b>reporting_manager</b></th>
+                            <th><b>digital_lead</b></th>
+                            <th><b>tech_stack</b></th>
+                            <th><b>experience</b></th>
+                            <th><b>competency</b></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for emp in thread.table %}
+                        <tr>
+                            <td>{{emp.ID}}</td>
+                            <td>{{emp.emp_id}}</td>
+                            <td>{{emp.associate_name}}</td>
+                            <td>{{emp.department}}</td>
+                            <td>{{emp.reporting_manager}}</td>
+                            <td>{{emp.digital_lead}}</td>
+                            <td>{{emp.tech_stack}}</td>
+                            <td>{{emp.experience}}</td>
+                            <td>{{emp.competency}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                {% if thread.has_attachments %}
+                <div class="attachments text-start" style="margin-left:21px;">
+                    <br>
+                    <b>Attachments :</b>
+                    <ul>
+                        {% for attachment in thread.attachments %}
+                        <li><a href="#">{{ attachment.filename }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                <br>
+                <div class="img text-end mb-2">
+                    <img src="https://www.drupal.org/files/MOURI%20Tech.png" alt="Company Logo" width="200px" class="company-logo">
+                </div>
+            </div>
+        </center>
+        {% endfor %}
+
+    </div>
+</div>
+
+<style>
+    .company-logo {
+        max-width: 100%; /* Limit the logo width to fit within its parent container */
+    }
+</style>
+
+{% endblock %}

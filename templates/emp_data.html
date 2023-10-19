@@ -1,0 +1,113 @@
+{% extends 'home.html' %}
+
+ 
+
+{% block content %}
+
+<style>
+    h2 {
+        font-size: 25px;
+        font-weight: 500;
+        color: #0047AB;
+        margin-left: 3px;
+        margin-top: 0.6rem;
+    }
+</style>
+
+<div class="row mb-4" style="justify-content: space-between;">
+    <div class="col-md-6" style="width:auto; padding-right: 1px;">
+        <h2 class="heading-section">Employee Table</h2>
+    </div>
+    <div class="col text-end" style="margin-top: 5px;">
+        <select name="searc" id="fil" style='width:178px;;'>
+            <option value='2'>associate_name</option>
+            <option value='1'>emp_id</option>
+            <option value='6'>tech_stack</option>
+        </select>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" style="width:30%;">
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-striped text-center" id="myTable">
+                <thead>
+                    <tr>
+                        <th><b>emp_id</b></th>
+                        <th><b>associate_name</b></th>
+                        <th><b>department</b></th>
+                        <th><b>reporting_manager</b></th>
+                        <th><b>digital_lead</b></th>
+                        <th><b>tech_stack</b></th>
+                        <th><b>experience</b></th>
+                        <th><b>competency</b></th>
+                        <th><b>select</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in data %}
+                    <tr id="subContainer">
+                        <td>{{ emp.emp_id }}</td>
+                        <td>{{ emp.associate_name }}</td>
+                        <td>{{ emp.department }}</td>
+                        <td>{{ emp.reporting_manager }}</td>
+                        <td>{{ emp.digital_lead }}</td>
+                        <td>{{ emp.tech_stack }}</td>
+                        <td>{{ emp.experience }}</td>
+                        <td>{{ emp.competency }}</td>
+                        <td><input type="checkbox" name="selected_emp" value="{{ emp.emp_id }}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<a class="btn ws btn-success" style="font-weight: 400;margin-top: 5px;" id="send-reply">Add</a>
+<script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      k=document.getElementById("fil")
+      var selectedValue = k.options[k.selectedIndex].value;
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[selectedValue];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const sendReplyBtn = document.getElementById("send-reply");
+      sendReplyBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        const selectedEmpCheckboxes = document.querySelectorAll(
+          "input[name=selected_emp]:checked"
+        );
+        const selectedIds = Array.from(selectedEmpCheckboxes).map(
+          (checkbox) => checkbox.value
+        );
+        if (selectedIds.length > 0) {
+          const subject = "{{ subb }}";
+          const selectedIdsParam = selectedIds.join(",");
+          const url = `/reply?subject=${subject}&selected_ids=${selectedIdsParam}`;
+          window.location.href = url;
+        }
+      });
+    });
+
+    </script>
+
+{% endblock %}

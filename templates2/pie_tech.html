@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Stack Pie Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<style>
+    #chart{
+        height: 500px !important;
+        width: 500px !important;
+        position: relative;
+        top: 31px;
+    }
+</style>
+<body>
+    <h1>Tech Stack Distribution for {{ selected_month }}</h1>
+    <div id="chart"></div>
+    <script>
+        const techData = {{ tech_data_json | safe }};
+        
+        const techLabels = techData.map(item => item.tech_stack);
+        const techCounts = techData.map(item => item.count);
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const options = {
+                chart: {
+                    type: 'pie',
+                },
+                labels: techLabels,
+                series: techCounts,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 300
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }],
+                events: {
+                    dataPointSelection: function(event, chartContext, config) {
+                        // No need for the redirection here
+                    }
+                }
+            };
+    
+            const chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        });
+    </script>
+</body>
+</html>

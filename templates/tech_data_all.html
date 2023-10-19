@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Stack Data On Month-Wise</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h3 {
+            text-align: center;
+            padding: 20px;
+        }
+        #techStackChart {
+            width: 80%;
+            margin: auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h3>Tech Stack Data On Month-Wise</h3>
+    <div style="width: 80%; margin: auto;">
+        <canvas id="techStackChart" height="300"></canvas>
+    </div>
+    <script>
+        const techData = {{ tech_data | tojson | safe }};
+        const months = techData.months;
+        const techStackData = techData.data;
+        
+        // Prepare the dataset for the stacked bar chart
+        const datasets = Object.keys(techStackData).map(techStack => ({
+            label: techStack,
+            data: months.map(month => {
+                const entry = techStackData[techStack].find(item => item.month === month);
+                return entry ? entry.count : 0;
+            }),
+            backgroundColor: getRandomColor(),
+            stack: 'stackGroup',  // Assign the same stack group to create the stacked effect
+        }));
+
+        const ctx = document.getElementById('techStackChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tech Stack Count'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Tech Stack Distribution by Month '
+                }
+            }
+        });
+
+        // Function to generate random colors
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+</body>
+</html>

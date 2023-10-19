@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Graphs</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <h1>Client Requisitions Pie Graphs</h1>
+        <div style="width: 50%;">
+            <canvas id="count-chart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const pieDataJson = JSON.parse('{{ pie_data_json | safe }}');
+
+            const labels = pieDataJson.map(item => item.client_name);
+            const profileSharedCounts = pieDataJson.map(item => item.profile_shared_count);
+            const acceptedCounts = pieDataJson.map(item => item.accepted_count);
+            const rejectedCounts = pieDataJson.map(item => item.rejected_count);
+
+            const countCtx = document.getElementById('count-chart').getContext('2d');
+            const countChart = new Chart(countCtx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: profileSharedCounts,
+                        backgroundColor: generateRandomColors(profileSharedCounts.length),
+                        label: 'Profile Shared'
+                    },
+                    {
+                        data: acceptedCounts,
+                        backgroundColor: generateRandomColors(acceptedCounts.length),
+                        label: 'Accepted'
+                    },
+                    {
+                        data: rejectedCounts,
+                        backgroundColor: generateRandomColors(rejectedCounts.length),
+                        label: 'Rejected'
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Count Distribution',
+                        position: 'top'
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                const datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                                const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                return `${datasetLabel}: ${value}`;
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Function to generate random colors
+            function generateRandomColors(count) {
+                const colors = [];
+                for (let i = 0; i < count; i++) {
+                    const color = `rgba(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)}, 0.7)`;
+                    colors.push(color);
+                }
+                return colors;
+            }
+
+            // Function to generate random number between min and max (inclusive)
+            function getRandom(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+        });
+    </script>
+</body>
+</html>

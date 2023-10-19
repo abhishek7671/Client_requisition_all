@@ -1,0 +1,79 @@
+{% extends 'home.html' %}
+{% block content %}
+<style>
+    h2 {
+        font-size: 25px;
+        font-weight: 435;
+        color: #0047AB;
+        margin-left: 3px;
+        margin-top: -2.4rem;
+    }
+</style>
+    <div style="text-align: center">
+        <h2> Create Employee</h2>
+    </div>
+
+    <form action="/employpost" method="post" style="margin-top: 4% !important; margin: 0 auto;
+        padding: 20px;
+        border-radius: 8px;
+        width:750px !important;
+        background-color: #ffffff">
+
+        <div class="container">
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="emp_id">Employee ID:</label>
+                <input class="form-control" type="number" id="emp_id" name="emp_id" required><br><br>
+            </div>
+            <div class="col">
+                <label for="associate_name">Associate Name:</label>
+                <input class="form-control" type="text" id="associate_name" name="associate_name" required><br><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="department">Department:</label>
+                <input class="form-control" type="text" id="department" name="department" required><br><br>
+            </div>
+            <div class="col">
+                <label for="reporting_manager">Reporting Manager:</label>
+                <input class="form-control" type="text" id="reporting_manager" name="reporting_manager" required><br><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="digital_lead">Digital Lead:</label>
+                <input class="form-control" type="text" id="digital_lead" name="digital_lead" required><br><br>
+            </div>
+            <div class="col">
+                <label for="tech_stack">Tech Stack:</label>
+                <input class="form-control" type="text" id="tech_stack" name="tech_stack" required><br><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="experience">Experience:</label>
+                <input class="form-control" type="number" id="experience" name="experience" required><br><br>
+            </div>
+            <div class="col">
+                <label for="competency">Competency:</label>
+                <input class="form-control" type="text" id="competency" name="competency" required><br><br>
+            </div>
+        </div>
+
+            <div class="mt-2">
+                    <input type="submit" value="Submit">
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}

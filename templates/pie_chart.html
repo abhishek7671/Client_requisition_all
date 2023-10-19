@@ -1,0 +1,696 @@
+{% extends 'home.html' %} {% block content %}
+<style>
+  .card-body {
+    flex: 1 1 auto;
+    padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+    color: var(--bs-card-color);
+    position: relative;
+    left: 0px;
+  }
+  #pieChart {
+    display: block;
+    box-sizing: border-box;
+    height: 300px;
+    width: 300px;
+  }
+    
+  .card {
+    position: relative;
+    top: 17px;
+    left: 104px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  #monthPieChart {
+    padding: 9px 9px 13px 10px;
+  }
+  .cal {
+    position: relative;
+    left: 60px;
+    top: 6px;
+  }
+  .call {
+    position: relative;
+    top: 42px;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    text-align: center;
+    padding: 20px;
+  }
+  #techStackChartContainer {
+    width: 100%;
+    margin: auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    right: 20px;
+    left: 2px;
+    border-radius: 7px;
+  }
+  .tech {
+    position: relative;
+    left: 27%;
+  }
+  .cla {
+    width: 100%;
+    position: relative;
+    right: 100px;
+  }
+  .can {
+    position: relative;
+    left: 60px;
+  }
+  .cennter {
+    position: relative;
+    left: 26%;
+  }
+  body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Define styles for the container */
+
+
+/* Create a row to contain the two columns */
+.row {
+    display: flex; /* Use flexbox for the row */
+}
+
+/* Style the left column */
+.column {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+    flex: 1; /* Make the columns share equal width */
+    padding: 0px 0px 0px 0px; /* Add some spacing within each column */
+    border: 1px solid #ccc; /* Add borders for separation */
+}
+
+/* Add some margin between columns */
+.column + .column {
+    margin-left: 20px;
+}
+
+/* Responsive styles: Adjust the layout for smaller screens */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column; /* Stack columns vertically on small screens */
+    }
+
+    /* Reset margin between columns for stacked layout */
+    .column + .column {
+        margin-left: 20px;
+        margin-top: 20px; /* Add spacing between stacked columns */
+    }
+}
+
+
+
+
+  
+  .card-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+  }
+
+  .card1 {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    width: calc(25% - 20px); /* 25% minus margins */
+    border-radius: 10px; /* Rounded corners */
+    float: left;
+    box-sizing: border-box;
+}
+
+.profile-card {
+    background-color: #FFD700; /* Yellow */
+}
+
+.accepted-card {
+    background-color: #90EE90; /* Light Green */
+}
+
+.rejected-card {
+    background-color: #FF6347; /* Tomato Red */
+}
+
+.inprogress-card {
+    background-color: #ADD8E6; /* Light Blue */
+}
+
+/* Clearfix for float elements */
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+</style>
+<div>
+
+<div class="card1 profile-card">
+  <h3 style='text-align: center';>Profile Shared</h3>
+  <p style='text-align: center;font-size: x-large';>Count: {{ pie_data["Profile Shared"] }}</p>
+</div>
+
+<div class="card1 accepted-card">
+  <h3 style='text-align: center';>Accepted</h3>
+  <p style='text-align: center;font-size: x-large';>Count: {{ pie_data["Accepted"] }}</p>
+</div>
+
+<div class="card1 rejected-card">
+  <h3 style='text-align: center';>Rejected</h3>
+  <p style='text-align: center;font-size: x-large';>Count: {{ pie_data["Rejected"] }}</p>
+</div>
+
+<div class="card1 inprogress-card">
+  <h3 style='text-align: center';>In Progress</h3>
+  <p style='text-align: center;font-size: x-large';>Count: {{ pie_data["Inprogress"] }}</p>
+</div>
+
+<div class="clearfix"></div>
+
+
+
+
+
+<!-- Add this code snippet within your HTML template -->
+<div class="container mt-5">
+  <div class="row">
+
+    <!-- Doughnut Chart -->
+    
+    <div class="column" id="dataDiv1" style='width:500px; background-color: white; border-radius: 5px; overflow: hidden;'>
+      <div class="card-header" style='background-color: #f4f4f4; padding: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);'>
+        <h2 class="card-title">Client Requisition Data</h2>
+      </div>
+      <div class="card-body">
+        <canvas id="doughnutChart" width="300" height="300" style='margin: auto ;'></canvas>
+        <div id="centerData" style="position: absolute; top: 52%; left: 40%; transform: translate(-50%, -50%); text-align: center;">
+          <h4>Total</h4>
+          <p id="totalCount">0</p>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Monthly Pie Chart -->
+    <div class="col-5 column" id="dataDiv" style="display: none;width:500px; background-color: white; border-radius: 5px; overflow: hidden;margin-left:110px; margin-right:26px">
+      <div class="card-header" style='background-color: #f4f4f4; padding: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);'>
+        <h4 class="card-title" id="monthlyRequisitionHeader"></h4>
+      </div>
+      <div class="card-body1">
+        <div style="position: relative;">
+          <canvas id="monthPieChart" width="300" height="300" style="display: block;box-sizing: border-box;height: 300px;width: 300px;margin:auto;"></canvas>
+          <div id="monthCenterData" style="position: absolute; top: 52%; left: 35%; transform: translate(-50%, -50%); text-align: center; ">
+            <h4>Total</h4>
+            <p id="monthTotalCount">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+ 
+
+
+
+
+  <div class="container mt-4">
+    <h2 class="tech text-center">Tech Stack Data On Month-Wise</h2>
+    <div id="techStackChartContainer">
+      <canvas id="techStackChart" height="350"></canvas>
+    </div>
+  </div>
+
+
+
+  <div class="container mt-4 call">
+    <h2 class="text-center cennter">Client Requisitions Pie Graphs</h2>
+    <div class="row cla">
+      
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" style='text-align: center';> Profile Count </h3>
+          </div>
+          <div class="card-body">
+            <canvas id="profile-shared-chart" width="300" height="300" style="position:relative;right:10px"></canvas>
+            <div class="center-data" style="position: absolute; top: 52%; left: 38%; transform: translate(-50%, -50%); text-align: center;">
+              <h4>Total</h4>
+              <p id="profileSharedTotalCount">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" style='text-align: center';>Accepted Count </h3>
+          </div>
+          <div class="card-body">
+            <canvas id="accepted-chart" width="300" height="300" style="position: relative;right: 10px;"></canvas>
+            <div class="center-data" style="position: absolute; top: 52%; left: 38%; transform: translate(-50%, -50%); text-align: center;">
+              <h4>Total</h4>
+              <p id="acceptedTotalCount">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" style='text-align: center';>Rejected Count </h3>
+          </div>
+          <div class="card-body">
+            <canvas id="rejected-chart" width="300px" height="300px" style="position: relative;right: 10px;"></canvas>
+            <div class="center-data" style="position: absolute; top: 52%; left: 38%; transform: translate(-50%, -50%); text-align: center;">
+              <h4>Total</h4>
+              <p id="rejectedTotalCount">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+<script>
+ 
+  const doughnutDataJson = {{ pie_data_json|safe }};
+  const labelsDoughnut = doughnutDataJson.map(item => item.client_name);
+  const dataDoughnut = doughnutDataJson.map(item => item.client_count);
+  const clientIdsDoughnut = doughnutDataJson.map(item => item.client_id);
+  const colorsDoughnut = generateRandomColors(labelsDoughnut.length);
+  const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+
+  const doughnutChart = new Chart(ctxDoughnut, {
+    type: 'doughnut',
+    data: {
+      labels: labelsDoughnut,
+      datasets: [{
+        data: dataDoughnut,
+        backgroundColor: colorsDoughnut,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            usePointStyle: true, 
+          },
+        },
+      },
+    }
+  });
+
+
+  const totalCount = dataDoughnut.reduce((a, b) => a + b, 0);
+  const totalCountElement = document.getElementById('totalCount');
+  totalCountElement.textContent = totalCount;
+
+
+
+  
+
+  ctxDoughnut.canvas.addEventListener('click', function(event) {
+      const segments = doughnutChart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+
+      if (segments.length > 0) {
+          const clientId = clientIdsDoughnut[segments[0].index];
+          const selectedClientName = labelsDoughnut[segments[0].index];
+
+          updateMonthlyRequisitionHeader(selectedClientName);
+          localStorage.setItem('selectedClientName', selectedClientName);
+          redirectToDetailsPage(clientId);
+      }
+  });
+
+  function redirectToDetailsPage(clientId) {
+      window.location.href = `/?client_id=${clientId}`;
+  }
+
+  function generateRandomColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+          const color = `rgba(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)}, 0.7)`;
+          colors.push(color);
+      }
+      return colors;
+  }
+
+  function getRandom(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateMonthlyRequisitionHeader(clientName) {
+      const monthlyRequisitionHeader = document.querySelector('#monthlyRequisitionHeader');
+      if (monthlyRequisitionHeader) {
+          monthlyRequisitionHeader.textContent = `Monthly Requisition Data for ${clientName}`;
+      }
+  }
+
+  const storedClientName = localStorage.getItem('selectedClientName');
+  if (storedClientName) {
+      updateMonthlyRequisitionHeader(storedClientName);
+  }
+</script>
+
+
+
+
+<!-- Script for Monthly Pie Chart -->
+<script>
+  const monthPieDataJson = {{ pie_data_json_month|safe }};
+  const monthLabels = monthPieDataJson.map(item => item.month);
+  const monthData = monthPieDataJson.map(item => item.count);
+  const monthCtx = document.getElementById('monthPieChart').getContext('2d');
+  if(monthPieDataJson.length>0){
+  
+  const dataDiv = document.getElementById('dataDiv')
+    dataDiv.style.display = 'block'; dataDiv1.style.margin="0px 30px 0px 0px";
+
+  }
+  else{
+      dataDiv1.style.margin="0px 0px 0px 280px";
+  }
+
+  const monthPieChart = new Chart(monthCtx, {
+    type: 'doughnut', 
+    data: {
+      labels: monthLabels,
+      datasets: [{
+        data: monthData,
+        backgroundColor: generateRandomColors(monthLabels.length),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            usePointStyle: true, 
+          },
+        },
+        
+        datalabels: {
+          color: '#000', // Text color
+          formatter: (value, context) => {
+            return `${value}\nTotal: ${monthTotalCount}`; 
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: 'Monthly Distribution',
+        position: 'top'
+      },
+    },
+  });
+
+
+  const monthTotalCount = monthData.reduce((a, b) => a + b, 0);
+  const monthTotalCountElement = document.getElementById('monthTotalCount');
+  monthTotalCountElement.textContent = monthTotalCount;
+
+  function generateRandomColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+          const color = `rgba(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)}, 0.7)`;
+          colors.push(color);
+      }
+      return colors;
+  }
+
+  function getRandom(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+</script>
+
+
+
+
+
+<!-- Script for Profile Shared, Accepted, and Rejected Pie Charts using Doughnut -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const pieDataJson = {{ pie_data_json1 | safe }};
+    const labels = pieDataJson.map(item => item.client_name);
+    const profileSharedCounts = pieDataJson.map(item => item.profile_shared_count);
+    const acceptedCounts = pieDataJson.map(item => item.accepted_count);
+    const rejectedCounts = pieDataJson.map(item => item.rejected_count);
+
+    const sharedCtx = document.getElementById('profile-shared-chart').getContext('2d');
+    const sharedChart = new Chart(sharedCtx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: profileSharedCounts,
+          backgroundColor: generateRandomColors(profileSharedCounts.length)
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: true,
+        title: {
+          display: true,
+          text: 'Profile Shared Count Distribution',
+          position: 'top'
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: {
+              usePointStyle: true 
+            }
+          },
+          
+          datalabels: {
+            color: '#000', // Text color
+            formatter: (value, context) => {
+              return `${value}\nTotal: ${profileSharedTotalCount}`; 
+            },
+          },
+        }
+      }
+    });
+
+    const acceptedCtx = document.getElementById('accepted-chart').getContext('2d');
+    const acceptedChart = new Chart(acceptedCtx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: acceptedCounts,
+          backgroundColor: generateRandomColors(acceptedCounts.length)
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: true,
+        title: {
+          display: true,
+          text: 'Accepted Count Distribution',
+          position: 'top'
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: {
+              usePointStyle: true 
+            }
+          },
+          datalabels: {
+            color: '#000', 
+            formatter: (value, context) => {
+              return `${value}\nTotal: ${acceptedTotalCount}`;
+            },
+          },
+        }
+      }
+    });
+
+    const rejectedCtx = document.getElementById('rejected-chart').getContext('2d');
+    const rejectedChart = new Chart(rejectedCtx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: rejectedCounts,
+          backgroundColor: generateRandomColors(rejectedCounts.length)
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: true,
+        title: {
+          display: true,
+          text: 'Rejected Count Distribution',
+          position: 'top'
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: {
+              usePointStyle: true 
+            }
+          },
+          datalabels: {
+            color: '#000',
+            formatter: (value, context) => {
+              return `${value}\nTotal: ${rejectedTotalCount}`; 
+            },
+          },
+        }
+      }
+    });
+
+    
+    const profileSharedTotalCount = profileSharedCounts.reduce((a, b) => a + b, 0);
+    const acceptedTotalCount = acceptedCounts.reduce((a, b) => a + b, 0);
+    const rejectedTotalCount = rejectedCounts.reduce((a, b) => a + b, 0);
+
+    document.getElementById('profileSharedTotalCount').textContent = profileSharedTotalCount;
+    document.getElementById('acceptedTotalCount').textContent = acceptedTotalCount;
+    document.getElementById('rejectedTotalCount').textContent = rejectedTotalCount;
+
+    function generateRandomColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        const color = `rgba(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)}, 0.7)`;
+        colors.push(color);
+      }
+      return colors;
+    }
+
+    function getRandom(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  const techData = {{ tech_data | tojson | safe }};
+  const months = techData.months;
+  const techStackData = techData.data;
+
+  const datasets = Object.keys(techStackData).map(techStack => ({
+      label: techStack,
+      data: months.map(month => {
+          const entry = techStackData[techStack].find(item => item.month === month);
+          return entry ? entry.count : 0;
+      }),
+      backgroundColor: getRandomLightColor(),
+      stack: 'stackGroup',
+  }));
+
+  const stackctx = document.getElementById('techStackChart').getContext('2d');
+  const chart = new Chart(stackctx, {
+      type: 'bar',
+      data: {
+          labels: months,
+          datasets: datasets,
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+              y: {
+                  beginAtZero: true,
+                  title: {
+                      display: true,
+                      text: 'Tech Stack Count'
+                  }
+              },
+              x: {
+                  title: {
+                      display: true,
+                      text: 'Month'
+                  }
+              }
+          },
+          title: {
+              display: true,
+              text: 'Tech Stack Distribution by Month'
+          },
+          plugins: {
+              legend: {
+                  display: true,
+                  position: 'right',
+                  labels: {
+                      usePointStyle: true 
+                  }
+              }
+          }
+      }
+  });
+
+  function getRandomLightColor() {
+      const minChannelValue = 150; 
+      let color = '#';
+
+      for (let i = 0; i < 3; i++) {
+          const channelValue = minChannelValue + Math.floor(Math.random() * (256 - minChannelValue));
+          const channelHex = channelValue.toString(16).toUpperCase();
+          color += channelHex.length === 1 ? '0' + channelHex : channelHex;
+      }
+
+      return color;
+  }
+</script>
+
+{% endblock %}

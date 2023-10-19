@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pie Chart</title>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            width: calc(25% - 20px); /* 25% minus margins */
+            border-radius: 10px; /* Rounded corners */
+            float: left;
+            box-sizing: border-box;
+        }
+
+        .profile-card {
+            background-color: #FFD700; /* Yellow */
+        }
+
+        .accepted-card {
+            background-color: #90EE90; /* Light Green */
+        }
+
+        .rejected-card {
+            background-color: #FF6347; /* Tomato Red */
+        }
+
+        .inprogress-card {
+            background-color: #ADD8E6; /* Light Blue */
+        }
+
+        /* Clearfix for float elements */
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pie Chart Data</h1>
+
+    <div class="card profile-card">
+        <h3>Profile Shared</h3>
+        <p>Count: {{ pie_data["Profile Shared"] }}</p>
+    </div>
+
+    <div class="card accepted-card">
+        <h3>Accepted</h3>
+        <p>Count: {{ pie_data["Accepted"] }}</p>
+    </div>
+
+    <div class="card rejected-card">
+        <h3>Rejected</h3>
+        <p>Count: {{ pie_data["Rejected"] }}</p>
+    </div>
+
+    <div class="card inprogress-card">
+        <h3>In Progress</h3>
+        <p>Count: {{ pie_data["Inprogress"] }}</p>
+    </div>
+
+    <div class="clearfix"></div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{% extends 'home.html' %}
+{% block content %}
+<style>
+    h2.heading-section {
+        font-size: 25px;
+        font-weight: 435;
+        color: #0047AB;
+        margin-left: 3px;
+        margin-top: 0.6rem;
+    }
+
+    
+</style>
+
+<div class="row mb-4">
+    <div class="col-md-6" style="width: 35.5%; padding-right: 1px;">
+        <h2 class="heading-section">Client Requisition List</h2>
+    </div>
+    <div class="col-md-4 mt-2" style="margin-left: 21px;">
+        <select name="searc" id="fil" style="width: 147px;margin-left: -6px;">
+            <option value="1">Client_Name</option>
+        </select>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" style="width: 55%;">
+    </div>
+    <div class="col text-end mt-2">
+        <a href="/requisition" class="btn btn-success float-right" style="font-weight: 500;">Create New Requisition +</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md">
+        <div class="table-responsive text-nowrap scrollable-table">
+            <table class="table table-striped text-center" id="myTable" style="margin-bottom: 0rem">
+                <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>Client Name</b></th>
+                        <th><b>Date</b></th>
+                        <th><b>Reference Subject</b></th>
+                        <th><b>Request By</b></th>
+                        <th><b>Tech Stack</b></th>
+                        <th><b>Resource Provided</b></th>
+                        <th><b>Accepted Count</b></th>
+                        <th><b>Rejected Count</b></th>
+                        <th><b>Comments</b></th>
+                        <th><b>JD Status</b></th>
+                        <th><b>Profile Shared Count</b></th>
+                        <th><b>Select Associates</b></th>
+                        <th><b>Status</b></th>
+                        <th><b>Edit</b></th>
+                        <th><b>Delete</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for requisition in requisitions %}
+                    <tr>
+                        <td scope="row">{{ requisition.id }}</td>
+                        <td>{{ requisition.client_name }}</td>
+                        <td>{{ requisition.date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="/email_thread_data/{{ requisition.reference_email }}">{{ requisition.reference_email }}</a>
+                        </td>
+                        <td>{{ requisition.requestby }}</td>
+                        <td>{{ requisition.tech_stack_str }}</td>
+                        <td>{{ requisition.resource_provided }}</td>
+                        <td>{{ requisition.accepted_count }}</td>
+                        <td>{{ requisition.rejected_count }}</td>
+                        <td>{{ requisition.comments }}</td>
+                        <td>{{ requisition.jdstatus }}</td>
+                        <td>{{ requisition.profile_shared_count }}</td>
+                        <td><a href="/emp_data/{{ requisition.reference_email }}">select</a></td>
+                        {% if requisition.status == "open" %}
+                        <td>
+                            <a href="#" class="btn ws btn-success">{{ requisition.status }}</a>
+                        </td>
+                        {% elif requisition.status == "close" %}
+                        <td><a href="#" class="btn ws btn-danger">{{ requisition.status }}</a></td>
+                        {% else %}
+                        <td><a href="#" class="btn ws btn-warning">{{ requisition.status }}</a></td>
+                        {% endif %}
+                        <td>
+                            <a href="/client_requisition/{{ requisition.id }}" class="btn btn-warning">EDIT</a>
+                        </td>
+                        <td>
+                            <a href="/client_requisitions_put/{{ requisition.id }}" class="btn btn-danger">DELETE</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        k = document.getElementById("fil");
+        var selectedValue = k.options[k.selectedIndex].value;
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[selectedValue];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

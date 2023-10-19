@@ -1,0 +1,71 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<style>
+
+
+</style>
+<div class="" style="display:flex; ">
+
+    <!-- Left side: Client Form -->
+    <div class="col-6">
+        <h3 class="mb-4" style="text-align:center;font-size: 25px ;
+        font-weight: 435;
+        color: #0047AB;
+        margin-top:-7%;">Create Client</h3>
+        {% if message %}
+            <p style='text-align: center;'>{{ message }}</p>
+        {% endif %}
+        <form method="post" action="/add_client/" style="width: 500px !important;
+        padding: 20px 50px 20px 50px;
+        border-radius: 8px;
+        background-color: #ffffff" >
+            <label for="name">Name:</label>
+            <input class="form-control" type="text" id="name" name="name"><br><br>
+            <label for="email">Email:</label>
+            <input class="form-control" type="email" id="email" name="email"><br><br>
+            <label for="address">Address:</label>
+            <input class="form-control" type="text" id="address" name="address"><br><br>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+
+    <div class="col-6">
+        <div>
+        <h3 class="mb-4" style="text-align:center; font-size: 25px;
+        font-weight: 435;
+        color: #0047AB;
+        margin-top:-7%;">Client List</h3>
+        </div>
+    <div class="table-responsive text-nowrap" style="text-align:center;height:440px;overflow:auto;
+        border-radius: 8px;">
+        <table class="table table-striped" style="margin-bottom: 0rem">
+            <thead style="position:sticky;z-index:1; top:0px">
+                <tr>
+                    <th><b>ID</b></th>
+                    <th><b>Client Name</b></th>
+                    <th><b>Email</b></th>
+                    <th><b>Address</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in client_list %}
+                    <tr>
+                        <th scope="row">{{ c.id }}</th>
+                        <td>{{ c.name }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.address }}</td>
+                    </tr>
+                    
+
+
+                    
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+
+</div>
+{% endblock %}

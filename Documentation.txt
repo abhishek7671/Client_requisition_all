@@ -1,0 +1,59 @@
+API Documentation
+-----------------------------------------
+1)Get All Students
+------------------
+Method: GET
+Endpoint: /students/all
+Description: Retrieves a list of all student records.
+Response: List of student records.
+Authorization: None required.
+
+2)Sign Up
+--------------
+Method: POST
+Endpoint: /students/
+Description: Creates a new user account for a student.
+Request Body:
+fname (string): First name of the student.
+lname (string): Last name of the student.
+email (string): Email address of the student.
+password (string): Password for the student account.
+Response: Message indicating whether the user account was created successfully or if the email already exists.
+Authorization: None required.
+
+3)Login
+------------
+Method: POST
+Endpoint: /login
+Description: Authenticates a user and generates access and refresh tokens.
+Request Body:
+username (string): Email address of the user.
+password (string): Password of the user.
+Response: Access and refresh tokens for the authenticated user.
+Authorization: None required.
+
+4)Get Students (Authenticated)
+---------------------------------
+Method: GET
+Endpoint: /students/all/in
+Description: Retrieves a list of student records for authenticated users.
+Query Parameters:
+skip (integer): Number of records to skip (default: 0).
+limit (integer): Maximum number of records to retrieve (default: 100).
+Response: List of student records.
+Authorization: Bearer token required in the Authorization header.
+
+5)Change Password
+---------------------
+Method: POST
+Endpoint: /changepassword
+Description: Changes the password for a user.
+Request Body:
+email (string): Email address of the user.
+old_password (string): Current password of the user.
+new_password (string): New password for the user.
+Response: Message indicating whether the password was changed successfully or if the user was not found or the old password was incorrect.
+Authorization: None required.
+
+
+pytest --cov-report term --cov=.

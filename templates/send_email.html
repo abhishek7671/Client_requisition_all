@@ -1,0 +1,231 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<style>
+    h2 {
+        font-size: 25px;
+        font-weight: 500;
+        color: #0047AB;
+        margin-top: -3%;
+        text-align: center;
+        width: 100%;
+    }
+</style>
+    <div class="container">
+        <h2 >Reply to Email Thread</h2>
+        <form action="/emailThread/" method="post" enctype="multipart/form-data" style="
+        padding: 20px;
+        border-radius: 8px;
+        width:1000px !important;
+        background-color: #ffffff">
+            <div class="mt-4">
+                <label for="reply_email1">To :</label>
+                <div class="to_address">
+                    {% for address in to_address %}
+                    <div id="part" class="recipient-chip">
+                        {{ address }}
+                        <input type="hidden" id="reply_email1" name="reply_email1" value="{{ address }}">
+                        <span class="remove-recipient" onclick="removeAddress(this)">x</span>
+
+                    </div>
+                    {% endfor %}
+                    <input class="form-control mt-3" type="text" id="manualAdd" placeholder="Add To Address">
+                    <button type="button" onclick="addManualAdd()">Add</button>
+                </div>
+            </div>
+
+            <!-- <input type="email" id="reply_email1" name="reply_email1" required> -->
+            <div class="mt-4">
+                <label for="part">CCs:</label>
+                <div class="cc-recipients">
+                    {% for participant in participants %}
+                    <div id="part" class="recipient-chip">
+                        {{ participant }}
+                        <input type="hidden" id="myListItems" name="myListItems" value="{{ participant }}">
+                        <span class="remove-recipient" onclick="removeRecipient(this)">x</span>
+                    </div>
+                    {% endfor %}
+                    <input class="form-control mt-3" type="text" id="manualRecipient" placeholder="Add CC recipient">
+                    <button type="button" onclick="addManualRecipient()">Add</button>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label for="subject1">Subject:</label>
+                <input class="form-control" type="text" id="subject1" name="subject1" value="{{ default_subject }}" required readonly>
+            </div>
+
+            <div class="mt-4">
+                {% if table %}
+                <label for="table">Table:</label>
+                <div class="form-control" id="table" contenteditable="false" style= "border: 1px solid #ccc;
+                    padding: 0rem; padding-top: 0.25rem" >
+                    <!-- <span class="remove" onclick="removeTable(this)">x</span> -->
+<!--                    <a href="http://127.0.0.1:8000/emp_data/{{ default_subject }}" class="anchortag"><span class="remove-recipient">Edit</span></a>-->
+                    <a href="http://127.0.0.1:8000/emp_data/{{ default_subject }}" class="col text-end"
+               style="width: 100%; margin-right: 0.5rem; font-weight: 400;"><span class="remove-recipient" style="margin-left: 925px;">Edit</span></a>
+                    {{ table | safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <label for="comments">Comments:</label>
+                <textarea class="form-control" id="comments" name="comments">
+                </textarea>
+            </div>
+
+            <div class="mt-4">
+                <label for="attachment">Attachment:</label>
+                <input class="form-control" type="file" id="attachment" name="attachment">
+            </div>
+
+            <div class="mt-4">
+                <input class="form-control"  type="submit" value="Send Reply" style="margin-top: 3% !important;">
+            </div>
+            <input type="hidden" id="selected_ids" name="selected_ids" value="{{ selected_ids }}">
+        </form>
+    </div>
+    <style>
+        .cc-recipients {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .recipient-chip {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px 5px;
+            margin: 2px;
+            display: flex;
+            align-items: center;
+        }
+        .recipient-chip .remove-recipient {
+            cursor: pointer;
+            margin-left: 5px;
+            color: #999;
+        }
+        .remove {
+            cursor: pointer;
+            position: relative;
+            left: 98%;
+            border: 1px solid #b5b2b2;
+            padding: 2px 5px 5px 5px;
+            background-color: #eeeef1;
+        }
+        .anchortag {
+            text-decoration: none;
+            color: black;
+            border: 1px solid #b9b7b7;
+            background-color: #d1cccc;
+            position: relative;
+            left: 96%;
+            padding: 2px 5px 4px 2px;
+        }
+        .to_address {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+    </style>
+    <script>
+        function removeRecipient(button) {
+            var recipientChip = button.parentElement;
+            recipientChip.remove();
+            updateMyListItems();
+        }
+        function removeTable(button) {
+            var recipientChip = button.parentElement;
+            recipientChip.remove();
+            updateMyListItems();
+        }
+        function removeAddress(button) {
+            var recipientChip = button.parentElement;
+            recipientChip.remove();
+            updateMyListItems();
+        }
+    function addManualRecipient() {
+    var manualRecipientInput = document.getElementById("manualRecipient");
+    var recipientEmail = manualRecipientInput.value.trim();
+    if (recipientEmail) {
+        var newRecipientChip = document.createElement("div");
+        newRecipientChip.className = "recipient-chip";
+        newRecipientChip.textContent = recipientEmail;
+        var removeButton = document.createElement("span");
+        removeButton.className = "remove-recipient";
+        removeButton.textContent = "x";
+        removeButton.onclick = function () {
+            removeRecipient(this);
+        };
+        newRecipientChip.appendChild(removeButton);
+        var ccRecipients = document.querySelector(".cc-recipients");
+        ccRecipients.insertBefore(newRecipientChip, manualRecipientInput);
+        manualRecipientInput.value = "";
+        var myListItemsInput = document.getElementById("myListItems");
+        var currentList = myListItemsInput.value.trim();
+        if (currentList === "") {
+            myListItemsInput.value = recipientEmail;
+        } else {
+            myListItemsInput.value = currentList + ", " + recipientEmail;
+        }
+    }
+}
+
+function addManualAdd() {
+    var manualAddInput = document.getElementById("manualAdd");
+    var newAddress = manualAddInput.value.trim();
+    if (newAddress) {
+        var newRecipientChip = document.createElement("div");
+        newRecipientChip.className = "recipient-chip";
+        newRecipientChip.textContent = newAddress;
+        var hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "reply_email1";  // Use a different name if needed
+        hiddenInput.value = newAddress;
+        var removeButton = document.createElement("span");
+        removeButton.className = "remove-recipient";
+        removeButton.textContent = "x";
+        removeButton.onclick = function () {
+            removeAddress(this);
+        };
+        newRecipientChip.appendChild(hiddenInput);
+        newRecipientChip.appendChild(removeButton);
+        var toAddressList = document.querySelector(".to_address");
+        toAddressList.insertBefore(newRecipientChip, manualAddInput);
+        manualAddInput.value = "";
+    }
+}
+function removeTable(button) {
+    var recipientChip = button.parentElement;
+    recipientChip.remove();
+    // Remove the table data from the form input
+    var myListItemsTableInput = document.getElementById("myListItemsTable");
+    var table = recipientChip.querySelector("div#table");
+    // Check if the table exists and remove it from the input
+    if (table && myListItemsTableInput) {
+        var tableData = table.textContent;
+        var currentInputValue = myListItemsTableInput.value;
+        // Remove the table data from the input value
+        var updatedInputValue = currentInputValue.replace(tableData, "").trim();
+
+        // Update the input value
+        myListItemsTableInput.value = updatedInputValue;
+    }
+
+    // Update email_data_body to use reply_text1 when table is removed
+    var emailDataBodyInput = document.getElementById("email_data_body");
+    if (emailDataBodyInput) {
+        emailDataBodyInput.value = reply_text1;
+    }
+}
+    </script>
+
+{% endblock %}

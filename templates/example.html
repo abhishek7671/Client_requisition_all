@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  textarea {
+    width: 100%;
+    height: 200px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+
+<textarea id="tableData"></textarea>
+<button onclick="populateTable()">Populate Table</button>
+
+<table id="editableTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td contenteditable="true">John Doe</td>
+      <td contenteditable="true">john@example.com</td>
+    </tr>
+    <tr>
+      <td contenteditable="true">Jane Smith</td>
+      <td contenteditable="true">jane@example.com</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+function populateTable() {
+  const tableDataTextarea = document.getElementById("tableData");
+  const editableTable = document.getElementById("editableTable");
+
+  const tableRows = editableTable.getElementsByTagName("tr");
+
+  let tableContent = "";
+  for (let i = 1; i < tableRows.length; i++) {
+    const rowData = tableRows[i].getElementsByTagName("td");
+    const name = rowData[0].textContent;
+    const email = rowData[1].textContent;
+    tableContent += `${name}\t${email}\n`;
+  }
+
+  tableDataTextarea.value = tableContent;
+}
+</script>
+
+</body>
+</html>

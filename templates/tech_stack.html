@@ -1,0 +1,70 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<style>
+
+
+    /* Style for the scrollable div */
+    .scrollable-div {
+        max-height: 340px; /* Adjust this value as needed */
+        overflow: hidden;
+    }
+
+    /* Hide the scrollbar */
+    .scrollable-div::-webkit-scrollbar {
+        width: 0.1em;
+    }
+
+   
+</style>
+
+<div class="row" style="display: flex; justify-content: space-between;">
+
+    <!-- Left side: Client Form -->
+    <div class="col" style="margin-left: 1rem">
+        <h3 class="mb-4" style="text-align:center;font-size: 25px;
+        font-weight: 435;
+        color: #0047AB;
+        margin-top:-7%;">Create Tech</h3>
+        {% if message %}
+        <p style='text-align: center;'>{{ message }}</p>
+        {% endif %}
+        <form method="post" action="/tech_stack/" style="width: 500px !important;
+        padding: 20px 50px 20px 50px;
+        border-radius: 8px;
+        background-color: #ffffff">
+            <label for="technology">Name:</label>
+            <input class="form-control" type="text" id="technology" name="technology"><br><br>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+
+    <!-- Right side: Client List -->
+    <div class="col">
+        <h3 class="mb-4" style="text-align:center;font-size: 25px;
+        font-weight: 435;
+        color: #0047AB;
+        margin-top:-7%;">Tech List</h3>
+        <div class="table-responsive text-nowrap" style="text-align:center;height:200px;overflow:auto;
+        border-radius: 8px;">
+            <table class="table table-striped" style="margin-bottom:0rem;">
+                <thead style="position:sticky;z-index:1; top:0px">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tech Name</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    {% for c in tech_1 %}
+                    <tr>
+                        <td>{{ c.id }}</td>
+                        <td>{{ c.technology }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

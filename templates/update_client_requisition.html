@@ -1,0 +1,184 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+
+    <center>
+
+        <h2><b style="color:#0047AB;">Update Client Requisition</b></h3>
+
+        <form method="post" action="/client_requisition_upd/{{requisition_data.id}}" style="
+        border: 1px solid #ccc;
+        border-radius: 5px;width:750px; margin: 0 auto;
+        padding: 20px;">
+
+
+            <div class="container mt-4">
+                {% if message %}
+                <p>{{ message }}</p>
+                {% endif %}
+            </div>
+
+            <input type="hidden" id="requisition_id" name="requisition_id" value="{{ requisition_data.id }}">
+
+
+            <div class="container mt-4">
+                <label for="client_name" >Client:</label>
+                <select id="client_name" name="client_name" >
+                <option value="">Select Client</option>
+                {% for client in client_list %}
+                    <option value="{{ client.name }}" {% if client.name == client_name.name %} selected {%endif%}>{{ client.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+
+            <div class="container mt-4">
+                <label>Technologies</label>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle select-i"
+                            type="select"
+                            id="multiSelectDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        {% if requisition_data.tech_stack_str %}
+                        {{requisition_data.tech_stack_str}}
+                        {%else%}
+                        Select Technologies{%endif%}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="multiSelectDropdown">
+                        <li class="p-3">
+                        {% for tech in tech_list %}
+                            <div class="form-check">
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="{{ tech.technology }}"
+                                        name="tech_stack"
+                                        value="{{ tech.technology }}"
+                                        {% if tech.technology in requisition_data.tech_stack_str %} checked {%endif%}
+                                >
+                                <label class="form-check-label" for="{{ tech.technology }}">{{ tech.technology}}</label>
+                            </div>
+                        {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container mt-4">
+                <label for="jdstatus">JD Status:</label>
+                <select id="jdstatus" name="jdstatus">
+                <option value="" disabled>Select JD Status</option>
+                <option value="yes" {% if requisition_data.jbstatus  == true %} selected {%endif%}>Yes</option>
+                <option value="no" {% if requisition_data.jbstatus == false %} selected {%endif%}>No</option>
+                </select>
+            </div>
+
+            <div class="container mt-4">
+                <label for="position_request">Position Request:</label>
+                <select id="position_request" name="position_request">
+                <option value="" selected disabled>Select Position Request</option>
+                <option value="yes" {% if requisition_data.position_request  == "yes" %} selected {%endif%}>Yes</option>
+                <option value="no" {% if requisition_data.position_request  == "no" %} selected {%endif%}>No</option>
+                <option value="not so clear" {% if requisition_data.position_request  == "not so clear" %} selected {%endif%}>Not so Clear</option>
+                </select>
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="reference_email">Reference Email:</label>
+                <input type="text" id="reference_email" name="reference_email" value="{{requisition_data.reference_email}}">
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="requestby">Request By:</label>
+                <input type="text" id="requestby" name="requestby" value="{{ requisition_data.requestby }}">
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                <option value="" disabled>Select Status</option>
+                <option value="open" {% if requisition_data.status  == "open" %} selected {%endif%}>Open</option>
+                <option value="closed" {% if requisition_data.status  == "closed" %} selected {%endif%}>Closed</option>
+                <option value="rmg pending" {% if requisition_data.status  == "rmg pending" %} selected {%endif%}>RMG Pending</option>
+                </select>
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="resource_provided">Resource Provided:</label>
+                <select id="resource_provided" name="resource_provided">
+                <option value="" selected disabled>Select</option>
+                <option value="yes" {% if requisition_data.resource_provided  == true %} selected {%endif%}>Yes</option>
+                <option value="no" {% if requisition_data.resource_provided  == false %} selected {%endif%}>No</option>
+                </select>
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="profile_shared_count">Profile Shared Count:</label>
+                <input type="number" id="profile_shared_count" name="profile_shared_count" value="{{ requisition_data.profile_shared_count }}">
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="accepted_count">Accepted Count:</label>
+                <input type="number" id="accepted_count" name="accepted_count" value="{{ requisition_data.accepted_count }}">
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="rejected_count">Rejected Count:</label>
+                <input type="number" id="rejected_count" name="rejected_count" value="{{ requisition_data.rejected_count }}">
+            </div>
+
+
+            <div class="container mt-4">
+                <label for="comments">Comments:</label>
+                <input type="text" id="comments" name="comments" value="{{ requisition_data.comments }}">
+            </div>
+
+
+            <input type="hidden" id="selected_technologies" name="selected_technologies">
+
+
+            <div class="container mt-3">
+                <input type="submit" value="Create">
+            </div>
+
+        </form>
+    </center>
+
+    <script>
+        const chBoxes =
+            document.querySelectorAll('.dropdown-menu input[type="checkbox"]');
+        const dpBtn =
+            document.getElementById('multiSelectDropdown');
+        let mySelectedListItems = [];
+
+        function handleCB() {
+            mySelectedListItems = [];
+            let mySelectedListItemsText = '';
+
+            chBoxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    mySelectedListItems.push(checkbox.value);
+                    mySelectedListItemsText += checkbox.value + ', ';
+                }
+            });
+
+            dpBtn.dataset.selectedTechnologies = JSON.stringify(mySelectedListItems);
+            dpBtn.innerText =
+                mySelectedListItems.length > 0
+                    ? mySelectedListItemsText.slice(0, -2) : 'Select';
+        }
+
+        chBoxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', handleCB);
+        });
+    </script>
+
+{% endblock %}
